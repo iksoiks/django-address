@@ -27,14 +27,14 @@ class AddressWidget(forms.TextInput):
 
     def _media(self):
         maps_api = 'https://maps.googleapis.com/maps/api/js'
-        query_parms = '?libraries=places&sensor=false'
+        query_parms = '?libraries=places'
 
         if getattr(settings, 'GOOGLE_API_KEY', None) is not None:
             query_parms += '&key={}'.format(settings.GOOGLE_API_KEY)
 
         return forms.Media(js=(
             'js/jquery.min.js',
-            'address/js/jquery.geocomplete.js',
+            'address/js/jquery.geocomplete.min.js',
             'address/js/address.js',
             maps_api + query_parms))
 
