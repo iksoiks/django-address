@@ -27,7 +27,7 @@ class AddressWidget(forms.TextInput):
 
     def _media(self):
         maps_api = 'https://maps.googleapis.com/maps/api/js'
-        query_parms = '?libraries=places'
+        query_parms = '?libraries=places&callback=initAddressAutoComplete'
 
         if getattr(settings, 'GOOGLE_API_KEY', None) is not None:
             query_parms += '&key={}'.format(settings.GOOGLE_API_KEY)
