@@ -59,10 +59,17 @@ class AddressWidget(forms.TextInput):
         else:
             ad = value.as_dict()
 
+        if ad['formatted'] and len(ad['formatted']) > 3:
+            input_value = ad['formatted']
+        elif ad['raw'] and len(ad['raw']) > 3:
+            input_value = ad['raw']
+        else:
+            input_value =''
+
         # Generate the elements. We should create a suite of hidden fields
         # For each individual component, and a visible field for the raw
         # input. Begin by generating the raw input.
-        elems = [super(AddressWidget, self).render(name, ad.get('formatted', None), attrs, **kwargs)]
+        elems = [super(AddressWidget, self).render(name, input_value, attrs, **kwargs)]
 
         # Now add the hidden fields.
         elems.append('<div id="%s_components">'%name)
@@ -108,3 +115,4 @@ class AddressField(forms.ModelChoiceField):
                     value[field] = None
 
         return to_python(value)
+        
