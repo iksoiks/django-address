@@ -81,14 +81,7 @@ def _to_python(value):
 
     # Handle the address.
     try:
-        if not (street_number or route or locality):
-            address_obj = Address.objects.get(raw=raw)
-        else:
-            address_obj = Address.objects.get(
-                street_number=street_number,
-                route=route,
-                locality=locality_obj
-            )
+        address_obj = Address.objects.get(raw=raw)
     except Address.DoesNotExist:
         address_obj = Address(
             street_number=street_number,
