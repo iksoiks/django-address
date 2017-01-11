@@ -41,7 +41,7 @@ class AddressWidget(forms.TextInput):
     def __init__(self, *args, **kwargs):
         attrs = kwargs.get('attrs', {})
         classes = attrs.get('class', '')
-        classes += (' ' if classes else '') + 'address'
+        classes += (' ' if classes else '') + 'address vTextField'
         attrs['class'] = classes
         kwargs['attrs'] = attrs
         super(AddressWidget, self).__init__(*args, **kwargs)
