@@ -81,14 +81,7 @@ def _to_python(value):
 
     # Handle the address.
     try:
-        if not (street_number or route or locality):
-            address_obj = Address.objects.get(raw=raw)
-        else:
-            address_obj = Address.objects.get(
-                street_number=street_number,
-                route=route,
-                locality=locality_obj
-            )
+        address_obj = Address.objects.get(raw=raw)
     except Address.DoesNotExist:
         address_obj = Address(
             street_number=street_number,
@@ -284,7 +277,7 @@ class AddressDescriptor(ForwardManyToOneDescriptor):
 class AddressField(models.ForeignKey):
     description = 'An address'
 
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         kwargs['to'] = 'address.Address'
         super(AddressField, self).__init__(**kwargs)
 

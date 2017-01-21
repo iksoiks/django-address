@@ -2,6 +2,7 @@ from django import forms
 # from uni_form.helpers import *
 from django.utils.safestring import mark_safe
 from .models import Address, to_python
+from django.conf import settings
 
 import logging
 logger = logging.getLogger(__name__)
@@ -24,22 +25,29 @@ class AddressWidget(forms.TextInput):
                   ('formatted', 'formatted_address'),
                   ('latitude', 'lat'), ('longitude', 'lng')]
 
-    class Media:
-        js = (
-              'https://maps.googleapis.com/maps/api/js?libraries=places&sensor=false',
-              'js/jquery.geocomplete.min.js',
-              'address/js/address.js')
+    def _media(self):
+        maps_api = 'https://maps.googleapis.com/maps/api/js'
+        query_parms = '?libraries=places&callback=initAddressAutoComplete'
+
+        if getattr(settings, 'GOOGLE_MAPS_API_KEY', None) is not None:
+            query_parms += '&key={}'.format(settings.GOOGLE_MAPS_API_KEY)
+
+        return forms.Media(js=(
+            'address/js/address.js',
+            maps_api + query_parms))
+
+    media = property(_media)
 
     def __init__(self, *args, **kwargs):
         attrs = kwargs.get('attrs', {})
         classes = attrs.get('class', '')
-        classes += (' ' if classes else '') + 'address'
+        classes += (' ' if classes else '') + 'address vTextField'
         attrs['class'] = classes
         kwargs['attrs'] = attrs
         super(AddressWidget, self).__init__(*args, **kwargs)
 
     def render(self, name, value, attrs=None, **kwargs):
-
+        
         # Can accept None, a dictionary of values or an Address object.
         if value in (None, ''):
             ad = {}
@@ -54,7 +62,7 @@ class AddressWidget(forms.TextInput):
         # Generate the elements. We should create a suite of hidden fields
         # For each individual component, and a visible field for the raw
         # input. Begin by generating the raw input.
-        elems = [super(AddressWidget, self).render(name, ad.get('formatted', None), attrs, **kwargs)]
+        elems = [super(AddressWidget, self).render(name, ad.get('raw', ad.get('formatted', None)), attrs, **kwargs)]
 
         # Now add the hidden fields.
         elems.append('<div id="%s_components">'%name)
