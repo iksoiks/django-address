@@ -32,6 +32,9 @@ class AddressWidget(forms.TextInput):
         if getattr(settings, 'GOOGLE_MAPS_API_KEY', None) is not None:
             query_parms += '&key={}'.format(settings.GOOGLE_MAPS_API_KEY)
 
+        if getattr(settings, 'GOOGLE_MAPS_REGION', None) is not None:
+            query_parms += '&region='.format(settings.GOOGLE_MAPS_REGION)
+            
         return forms.Media(js=(
             'address/js/address.js',
             maps_api + query_parms))
